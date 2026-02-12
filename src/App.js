@@ -19,12 +19,13 @@ function App() {
   useEffect(() => {
     const interval = setInterval(() => {
       const id = Date.now();
+
       setHearts((h) => [
         ...h,
         {
           id,
           left: Math.random() * 100,
-          size: 12 + Math.random() * 16,
+          size: 20 + Math.random() * 20,
           duration: 6 + Math.random() * 4,
         },
       ]);
@@ -40,7 +41,6 @@ function App() {
   return (
     <>
       <style>{`
-        /* 🌸 POPPINS FONT */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
         * {
@@ -63,22 +63,60 @@ function App() {
           position: relative;
         }
 
-        /* 💕 HEARTS */
+        /* 💕 HEART SHAPE */
         .heart {
           position: absolute;
           bottom: -40px;
-          color: rgba(255, 60, 120, 0.6);
+          transform: rotate(-45deg);
+          background: rgba(255, 60, 120, 0.85);
           animation: floatUp linear forwards;
-          pointer-events: none;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
 
+        .heart::before,
+        .heart::after {
+          content: "";
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          background: rgba(255, 60, 120, 0.85);
+          border-radius: 50%;
+        }
+
+        .heart::before {
+          top: -50%;
+          left: 0;
+        }
+
+        .heart::after {
+          left: 50%;
+          top: 0;
+        }
+
+.heart-text {
+  position: absolute;
+  color: pink;
+  font-weight: 400;
+  transform: rotate(45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+  margin-top: -1px; /* Adjust vertical position */
+  font-family: 'Poppins-Regular',;
+}
         @keyframes floatUp {
           from {
-            transform: translateY(0) scale(1);
+            transform: translateY(0) rotate(-45deg) scale(1);
             opacity: 1;
           }
           to {
-            transform: translateY(-115vh) scale(1.7);
+            transform: translateY(-115vh) rotate(-45deg) scale(1.5);
             opacity: 0;
           }
         }
@@ -93,7 +131,6 @@ function App() {
           z-index: 2;
         }
 
-        /* 🔥 BIGGEST POPUP */
         .popup.big {
           background: white;
           width: 820px;
@@ -183,26 +220,41 @@ function App() {
       `}</style>
 
       <div className="app">
-        {/* 💕 Floating hearts */}
-        {hearts.map((h) => (
-          <span
-            key={h.id}
-            className="heart"
-            style={{
-              left: `${h.left}%`,
-              fontSize: `${h.size}px`,
-              animationDuration: `${h.duration}s`,
-            }}
-          >
-            ❤️
-          </span>
-        ))}
+        {/* 💕 Floating hearts with MS inside */}
+        {hearts.map((h) => {
+          const fontSize = h.size * 0.35; // 35% of heart size
+
+          return (
+            <div
+              key={h.id}
+              className="heart"
+              style={{
+                left: `${h.left}%`,
+                width: `${h.size}px`,
+                height: `${h.size}px`,
+                animationDuration: `${h.duration}s`,
+              }}
+            >
+              <span
+                className="heart-text"
+                style={{
+                  fontSize: `${fontSize}px`,
+                }}
+              >
+                MS
+              </span>
+            </div>
+          );
+        })}
 
         {/* FIRST POPUP */}
         {step === 1 && (
           <div className="overlay">
             <div className="popup big">
-              <h2>You’ve been my Valentine all these years—can we make it forever? 💖</h2>
+              <h2>
+                You’ve been my Valentine all these years—can we make it forever?
+                💖
+              </h2>
 
               <div className="buttons">
                 <button className="yes" onClick={() => setStep(2)}>
@@ -231,8 +283,8 @@ function App() {
 
               <img
                 className="gif"
-                src="/gifs/urs.gif"
-                alt="Smart choice"
+                src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif"
+                alt="Love"
               />
 
               <div className="buttons single">
