@@ -3,9 +3,9 @@ import React, { useState, useEffect } from "react";
 function App() {
   const [step, setStep] = useState(1);
   const [noStyle, setNoStyle] = useState({});
-  const [hearts, setHearts] = useState([]);
   const [hoverCount, setHoverCount] = useState(0);
   const [toasts, setToasts] = useState([]);
+  const [hearts, setHearts] = useState([]);
 
   const messages = [
     'Wait… are you about to press "No" ?',
@@ -14,57 +14,72 @@ function App() {
     "That’s cute… but incorrect. Try again."
   ];
 
-  const moveNoButton = () => {
-    const id = Date.now();
-
-    // Show toast
-    setToasts((prev) => [...prev, { id, message: messages[hoverCount] }]);
-
-    setTimeout(() => {
-      setToasts((prev) => prev.filter((t) => t.id !== id));
-    }, 5000);
-
-    // If it's the 4th message → reset everything
-    if (hoverCount === 3) {
-      setNoStyle({}); // 🔥 Reset position
-      setHoverCount(0); // 🔁 Restart sequence
-      return;
-    }
-
-    // Otherwise move button
-    const x = Math.random() * 600 - 300;
-    const y = Math.random() * 360 - 180;
-
-    setNoStyle({
-      transform: `translate(${x}px, ${y}px)`,
-      transition: "transform 0.2s ease-out",
-    });
-
-    setHoverCount((prev) => prev + 1);
-  };
-
-  /* 💕 Floating hearts */
+  /* 💕 Floating Hearts */
   useEffect(() => {
     const interval = setInterval(() => {
       const id = Date.now();
 
-      setHearts((h) => [
-        ...h,
+      setHearts((prev) => [
+        ...prev,
         {
           id,
           left: Math.random() * 100,
-          size: 20 + Math.random() * 20,
-          duration: 6 + Math.random() * 4,
-        },
+          size: 20 + Math.random() * 30,
+          duration: 6 + Math.random() * 4
+        }
       ]);
 
       setTimeout(() => {
-        setHearts((h) => h.filter((heart) => heart.id !== id));
+        setHearts((prev) => prev.filter((h) => h.id !== id));
       }, 10000);
-    }, 500);
+    }, 400);
 
     return () => clearInterval(interval);
   }, []);
+
+  /* 😈 NO BUTTON ESCAPE (Far Away) */
+  const moveNoButton = (e) => {
+    const id = Date.now();
+  
+    setToasts((prev) => [...prev, { id, message: messages[hoverCount] }]);
+  
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.id !== id));
+    }, 5000);
+  
+    if (hoverCount === 3) {
+      setNoStyle({});
+      setHoverCount(0);
+      return;
+    }
+  
+    const rect = e.target.getBoundingClientRect();
+  
+    const mouseX = e.clientX;
+    const mouseY = e.clientY;
+  
+    const btnCenterX = rect.left + rect.width / 2;
+    const btnCenterY = rect.top + rect.height / 2;
+  
+    const dx = btnCenterX - mouseX;
+    const dy = btnCenterY - mouseY;
+  
+    const angle = Math.atan2(dy, dx);
+  
+    // 👇 Balanced escape distance
+    const distance = 420;
+  
+    const moveX = Math.cos(angle) * distance;
+    const moveY = Math.sin(angle) * distance;
+  
+    setNoStyle({
+      transform: `translate(${moveX}px, ${moveY}px)`,
+      transition: "transform 0.25s ease-out",
+    });
+  
+    setHoverCount((prev) => prev + 1);
+  };
+  
 
   return (
     <>
@@ -89,13 +104,26 @@ function App() {
           justify-content: center;
           align-items: center;
           position: relative;
+          overflow: hidden;
         }
 
-        /* Popup */
+        /* Floating Hearts */
+        .heart {
+          position: absolute;
+          bottom: -40px;
+          animation-name: floatUp;
+          animation-timing-function: linear;
+        }
+
+        @keyframes floatUp {
+          0% { transform: translateY(0); opacity: 1; }
+          100% { transform: translateY(-110vh); opacity: 0; }
+        }
+
         .overlay {
           position: fixed;
           inset: 0;
-          background: rgba(255, 0, 100, 0.18);
+          background: rgba(255, 0, 100, 0.15);
           display: flex;
           justify-content: center;
           align-items: center;
@@ -108,6 +136,7 @@ function App() {
           border-radius: 30px;
           text-align: center;
           box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+          z-index: 2;
         }
 
         .popup h2 {
@@ -142,7 +171,6 @@ function App() {
           color: white;
         }
 
-        /* 🔔 Toast Stack Top Right */
         .toast-container {
           position: fixed;
           top: 25px;
@@ -162,22 +190,27 @@ function App() {
           font-weight: 600;
           color: #e91e63;
           width: 380px;
-          animation: slideIn 0.35s ease, fadeOut 0.5s ease 4.5s forwards;
-        }
-
-        @keyframes slideIn {
-          from { transform: translateX(40px); opacity: 0; }
-          to { transform: translateX(0); opacity: 1; }
-        }
-
-        @keyframes fadeOut {
-          to { opacity: 0; transform: translateY(-10px); }
         }
       `}</style>
 
       <div className="app">
 
-        {/* 🔔 Toasts */}
+        {/* Hearts */}
+        {hearts.map((heart) => (
+          <div
+            key={heart.id}
+            className="heart"
+            style={{
+              left: `${heart.left}%`,
+              fontSize: `${heart.size}px`,
+              animationDuration: `${heart.duration}s`
+            }}
+          >
+            ❤️
+          </div>
+        ))}
+
+        {/* Toasts */}
         <div className="toast-container">
           {toasts.map((toast) => (
             <div key={toast.id} className="toast">
@@ -186,7 +219,6 @@ function App() {
           ))}
         </div>
 
-        {/* Main Popup */}
         {step === 1 && (
           <div className="overlay">
             <div className="popup">
@@ -215,7 +247,6 @@ function App() {
           <div className="overlay">
             <div className="popup">
               <h2>That’s a smart choice 😘</h2>
-
               <div className="buttons" style={{ justifyContent: "center" }}>
                 <button className="yes" onClick={() => setStep(1)}>
                   OK 💘
