@@ -11,7 +11,7 @@ function App() {
     'Wait… are you about to press "No" ?',
     "Are you sure?",
     "Like… double sure?",
-    "That’s cute… but incorrect. Try again."
+    "That’s cute… but incorrect. Try again.",
   ];
 
   /* 💕 Floating Hearts */
@@ -24,9 +24,9 @@ function App() {
         {
           id,
           left: Math.random() * 100,
-          size: 20 + Math.random() * 30,
-          duration: 6 + Math.random() * 4
-        }
+          size: 30 + Math.random() * 40,
+          duration: 6 + Math.random() * 4,
+        },
       ]);
 
       setTimeout(() => {
@@ -37,49 +37,45 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
-  /* 😈 NO BUTTON ESCAPE (Far Away) */
+  /* 😈 NO BUTTON ESCAPE */
   const moveNoButton = (e) => {
     const id = Date.now();
-  
+
     setToasts((prev) => [...prev, { id, message: messages[hoverCount] }]);
-  
+
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
     }, 5000);
-  
+
     if (hoverCount === 3) {
       setNoStyle({});
       setHoverCount(0);
       return;
     }
-  
+
     const rect = e.target.getBoundingClientRect();
-  
     const mouseX = e.clientX;
     const mouseY = e.clientY;
-  
+
     const btnCenterX = rect.left + rect.width / 2;
     const btnCenterY = rect.top + rect.height / 2;
-  
+
     const dx = btnCenterX - mouseX;
     const dy = btnCenterY - mouseY;
-  
+
     const angle = Math.atan2(dy, dx);
-  
-    // 👇 Balanced escape distance
     const distance = 420;
-  
+
     const moveX = Math.cos(angle) * distance;
     const moveY = Math.sin(angle) * distance;
-  
+
     setNoStyle({
       transform: `translate(${moveX}px, ${moveY}px)`,
       transition: "transform 0.25s ease-out",
     });
-  
+
     setHoverCount((prev) => prev + 1);
   };
-  
 
   return (
     <>
@@ -113,6 +109,21 @@ function App() {
           bottom: -40px;
           animation-name: floatUp;
           animation-timing-function: linear;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+          .heart-shape {
+      color: rgba(255, 60, 120, 0.6);
+        position: absolute;
+}
+
+        .heart-text {
+          color: white;
+          font-weight: 400;
+          text-align: center;
+          user-select: none;
+          text-shadow: 0 2px 6px rgba(0,0,0,0.3);
         }
 
         @keyframes floatUp {
@@ -194,8 +205,7 @@ function App() {
       `}</style>
 
       <div className="app">
-
-        {/* Hearts */}
+        {/* 💕 Floating Hearts with MS */}
         {hearts.map((heart) => (
           <div
             key={heart.id}
@@ -203,10 +213,20 @@ function App() {
             style={{
               left: `${heart.left}%`,
               fontSize: `${heart.size}px`,
-              animationDuration: `${heart.duration}s`
+              animationDuration: `${heart.duration}s`,
             }}
           >
-            ❤️
+            <span className="heart-shape">♥</span>
+
+            <div
+              className="heart-text"
+              style={{
+                position: "absolute",
+                fontSize: `${heart.size * 0.2}px`,
+              }}
+            >
+              MS
+            </div>
           </div>
         ))}
 
@@ -255,7 +275,6 @@ function App() {
             </div>
           </div>
         )}
-
       </div>
     </>
   );
