@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import test from "./assets/test.jpeg";
 
 function App() {
   const [step, setStep] = useState(1);
@@ -202,6 +203,23 @@ function App() {
           color: #e91e63;
           width: 380px;
         }
+          .fade-in-img {
+  width: 300px;
+  margin-top: 10px;
+  border-radius: 20px;
+  opacity: 0;
+  animation: fadeInSmooth 1.4s ease forwards;
+}
+  @keyframes fadeInSmooth {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
       `}</style>
 
       <div className="app">
@@ -267,11 +285,24 @@ function App() {
           <div className="overlay">
             <div className="popup">
               <h2>That’s a smart choice 😘</h2>
+              <img
+                className="gif"
+                src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif"
+                alt="Love"
+              />
               <div className="buttons" style={{ justifyContent: "center" }}>
-                <button className="yes" onClick={() => setStep(1)}>
+                <button className="yes" onClick={() => setStep(3)}>
                   OK 💘
                 </button>
               </div>
+            </div>
+          </div>
+        )}
+        {step === 3 && (
+          <div className="overlay">
+            <div className="popup">
+              <h2 className="fade-in">Forever starts now 💍✨</h2>
+              <img className="fade-in-img" src={test} alt="Forever Love" />
             </div>
           </div>
         )}
