@@ -1,15 +1,16 @@
 {
   "files": {
     "main.css": "/my-love-app/static/css/main.e6c13ad2.css",
-    "main.js": "/my-love-app/static/js/main.f53f0389.js",
+    "main.js": "/my-love-app/static/js/main.06fc9f14.js",
     "static/js/453.41e5834f.chunk.js": "/my-love-app/static/js/453.41e5834f.chunk.js",
+    "static/media/test.jpeg": "/my-love-app/static/media/test.0fe448403b465113661f.jpeg",
     "index.html": "/my-love-app/index.html",
     "main.e6c13ad2.css.map": "/my-love-app/static/css/main.e6c13ad2.css.map",
-    "main.f53f0389.js.map": "/my-love-app/static/js/main.f53f0389.js.map",
+    "main.06fc9f14.js.map": "/my-love-app/static/js/main.06fc9f14.js.map",
     "453.41e5834f.chunk.js.map": "/my-love-app/static/js/453.41e5834f.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.e6c13ad2.css",
-    "static/js/main.f53f0389.js"
+    "static/js/main.06fc9f14.js"
   ]
 }
